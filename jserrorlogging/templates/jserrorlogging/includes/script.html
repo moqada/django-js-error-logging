@@ -1,0 +1,21 @@
+{% load url from future %}
+{# inspired by errorception.com #}
+<script type="text/javascript">
+  var djjserr = {errors: [], endpoint: '{% url "jserrorlogging:add_log" %}'};
+  {% block meta_data %}{% endblock %}
+  (function() {
+    window.onerror = function (){djjserr.errors.push(arguments)};
+    var gen = function() {
+      var s = document.createElement('script'),
+          scripts = document.getElementsByTagName('script')[0];
+      s.src="{{ JSERRORLOGGING_STATIC_URL }}js/{% if DEBUG %}logger.js{% else %}logger.min.js{% endif %}";
+      s.async = !0;
+      scripts.parentNode.insertBefore(s, scripts);
+    };
+    if (window.addEventListener) {
+      window.addEventListener('load', gen, !1)
+    } else {
+      window.attachEvent('onload', gen);
+    }
+  }());
+</script>

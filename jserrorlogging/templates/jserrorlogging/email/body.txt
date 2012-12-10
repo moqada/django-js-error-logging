@@ -1,0 +1,11 @@
+{{ message|safe }}
+
+Where:    {{ line }} in {% if page == url %}inline script{% else %}{{ url|safe }}{% endif %}
+UserAgent:  {{ user_agent|safe }}
+When:     {% if when == 'before' %}Before{% else %}After{% endif %} page load
+On Page:  {{ page|safe }}
+Date:     {{ created_at }}
+{% if meta %}
+Extras
+======{% for k , v in meta.items %}
+{{ k|safe }}: {{ v|safe }}{% endfor %}{% endif %}

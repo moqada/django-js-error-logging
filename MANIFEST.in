@@ -1,0 +1,5 @@
+recursive-include jserrorlogging/static *
+recursive-include jserrorlogging/templates *
+include AUTHORS
+include LICENSE
+include README.rst

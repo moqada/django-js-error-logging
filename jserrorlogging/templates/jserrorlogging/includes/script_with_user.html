@@ -1,0 +1,9 @@
+{% extends "jserrorlogging/includes/script.html" %}
+
+{% block meta_data %}
+djjserr.meta = {
+  session_key: '{{ request.session.session_key }}',
+  user_id: {% if user.id %}{{ user.id }}{% else %}''{% endif %}
+};
+{% endblock %}
+

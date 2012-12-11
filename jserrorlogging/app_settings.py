@@ -6,7 +6,7 @@ STATIC_URL = getattr(settings, 'JSERRORLOGGING_STATIC_URL', settings.STATIC_URL 
 
 # for notified by email
 ENABLE_EMAIL = getattr(settings, 'JSERRORLOGGING_ENABLE_MAIL', True)
-MAIL_TO = getattr(settings, 'JSERRORLOGGING_MAIL_TO', settings.MANAGERS)
+MAIL_TO = getattr(settings, 'JSERRORLOGGING_MAIL_TO', settings.ADMINS)
 MAIL_NOTIFY_INTERVAL = getattr(settings, 'JSERRORLOGGING_MAIL_NOTIFY_INTERVAL', 3600)
 
 # for saved Django model

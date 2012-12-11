@@ -93,7 +93,7 @@ This option is default enabled.
 When you don't need to this option, ``JSERRORLOGGING_ENABLE_MAIL`` set to False.
 
 ``JSERRORLOGGING_MAIL_TO``
-   Default: ``settings.MANAGERS``
+   Default: ``settings.ADMINS``
 
    You can set the custom recipients for notification::
 

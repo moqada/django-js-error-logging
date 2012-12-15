@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 import json
 from django.test import TestCase
+from django.core import mail
 from django.test.utils import override_settings
 
 
-def create_dummy_error_data():
+def create_dummy_error_data(**kwargs):
     """ return dummy error data
     """
-    return {
+    data = {
         'page': 'http://localhost?test=key',
         'url': 'http://localhost/static/app.js',
         'message': 'Uncaught ReferenceError: aaa is not defined',
@@ -16,6 +17,8 @@ def create_dummy_error_data():
         'user_agent': ('Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.4 '
                        '(KHTML, like Gecko) Chrome/22.0.1229.92 Safari/537.4'),
     }
+    data.update(kwargs)
+    return data
 
 
 def create_post_data(errors, prefix='form-'):
@@ -81,12 +84,13 @@ class LogViewTests(TestCase):
         self.assertEqual(1, cnt)
 
     @override_settings(
-        JS_ERROR_NOTIFIER_MAIL_TO=[('Admin', 'admin@example.com')])
+        JSERRORLOGGING_MAIL_TO=[('Admin', 'admin@example.com')])
     def test_signal_notify_by_email(self):
-        data = [create_dummy_error_data()]
+        # same error message is cached and don't send
+        data = [create_dummy_error_data(message='SyntaxError -dummy for test-',
+                                        line=0)]
         self.client.post(get_log_view_url(), create_post_data(data))
         # check notify
-        from django.core import mail
         from django.conf import settings
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(

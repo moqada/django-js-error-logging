@@ -2,7 +2,7 @@
 Django JS Error Logging
 #######################
 
-.. image:: https://secure.travis-ci.org/moqada/django-js-error-logging?branch=master
+.. image:: https://secure.travis-ci.org/moqada/django-js-error-logging.png?branch=master
    :target: http://travis-ci.org/moqada/django-js-error-logging/
 
 The Django JS Error Logging is logging for Client-Side JavaScript errors.

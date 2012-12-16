@@ -1,6 +1,5 @@
 language: python
 env:
-    - TOXENV=py25-1.4
     - TOXENV=py26-1.4
     - TOXENV=py27-1.4
 install:

@@ -46,18 +46,29 @@ def get_log_view_url():
 class LogViewTests(TestCase):
     urls = 'jserrorlogging.urls'
 
+    def _assert_response(self, response, count=1):
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('Posted %s errors' % count in response.content,
+                        response.content)
+
+    def _assert_latest_log(self, **data):
+        from .models import Log
+        log = Log.objects.latest('id')
+        for k, v in data.items():
+            val = getattr(log, k)
+            self.assertEqual(
+                val, v, u'%s != %s (%s)' % (val, v, k))
+
     def test_it(self):
         data = [create_dummy_error_data()]
         res = self.client.post(get_log_view_url(), create_post_data(data))
-        self.assertEqual(res.status_code, 200)
-        self.assertTrue('Posted 1 errors' in res.content, res.content)
+        self._assert_response(res)
 
     def test_it_multiple(self):
         data = [create_dummy_error_data()]
         data.append(create_dummy_error_data())
         res = self.client.post(get_log_view_url(), create_post_data(data))
-        self.assertEqual(res.status_code, 200)
-        self.assertTrue('Posted 2 errors' in res.content, res.content)
+        self._assert_response(res, count=2)
 
     def test_it_with_meta(self):
         data = [create_dummy_error_data()]
@@ -65,12 +76,8 @@ class LogViewTests(TestCase):
         post_data = create_post_data(data)
         post_data.update(create_post_data(meta_data, prefix='form0-'))
         res = self.client.post(get_log_view_url(), post_data)
-        self.assertEqual(res.status_code, 200)
-        self.assertTrue('Posted 1 errors' in res.content, res.content)
-        from .models import Log
-        log = Log.objects.get()
-        self.assertEqual(
-            log.meta, json.dumps(dict([(v['name'], v['value']) for v in meta_data])))
+        self._assert_response(res)
+        self._assert_latest_log(meta=json.dumps(dict([(v['name'], v['value']) for v in meta_data])))
 
     def test_not_allowed_method(self):
         res = self.client.get(get_log_view_url())

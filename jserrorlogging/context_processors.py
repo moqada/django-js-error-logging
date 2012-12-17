@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .app_settings import STATIC_URL
+from .settings import STATIC_URL
 
 
 def static(request):

@@ -4,8 +4,8 @@ from django.core.cache import cache
 from django.core.mail import send_mail
 from django.db.models.loading import get_model
 from django.template.loader import render_to_string
-from .app_settings import (ENABLE_MODEL, LOG_MODEL,
-                           ENABLE_EMAIL, MAIL_TO, MAIL_NOTIFY_INTERVAL)
+from .settings import (ENABLE_MODEL, LOG_MODEL,
+                       ENABLE_EMAIL, MAIL_TO, MAIL_NOTIFY_INTERVAL)
 from .signals import add_log
 
 

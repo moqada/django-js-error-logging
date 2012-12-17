@@ -6,7 +6,7 @@ from django.forms.formsets import formset_factory
 from django.utils import timezone
 from django.views.generic.base import TemplateView
 from . import signals
-from .app_settings import LOGGER_NAME, ENABLE_LOGGER
+from .settings import LOGGER_NAME, ENABLE_LOGGER
 from .forms import LogForm, LogFormSet
 
 

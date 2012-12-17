@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+import datetime
 import json
+import mock
 from django.test import TestCase
 from django.core import mail
 from django.test.utils import override_settings
@@ -148,3 +150,41 @@ class LogViewTests(TestCase):
             mail.outbox[0].subject,
             u'%sJS_ERROR: %s' % (settings.EMAIL_SUBJECT_PREFIX, data[0]['message']))
         self.assertTrue(data[0]['message'] in mail.outbox[0].body, mail.outbox[0].body)
+
+
+class ReceiverNotifyByEmailTests(TestCase):
+    """ notify by email
+    """
+
+    def setUp(self):
+        # clear cache for notify interval
+        from django.core.cache import cache
+        cache.clear()
+
+    def _get_it(self):
+        from .receivers import notify_by_email
+        return notify_by_email
+
+    @mock.patch('django.utils.timezone.now')
+    def test_it_body(self, dummy_now):
+        dummy_now.return_value = datetime.datetime(2012, 12, 17, 10, 20)
+        data = create_dummy_error_data()
+        data.update(
+            user_id=1, session_key='dummy_session_key',
+            remote_addr='127.0.0.1',
+            created_at=dummy_now.return_value)
+        self._get_it()('sender', data=data)
+        from django.core import mail
+        data.update(created_at=data['created_at'].strftime('%Y-%m-%d %H:%M:%S'))
+        body = (
+            u'## %(message)s\n'
+            u'\n'
+            u'Where:      %(line)s in %(url)s\n'
+            u'UserAgent:  %(user_agent)s\n'
+            u'When:       Before page load\n'
+            u'On Page:    %(page)s\n'
+            u'Date:       %(created_at)s\n'
+            u'UserID:     %(user_id)s\n'
+            u'SessionKey: %(session_key)s\n\n'
+        ) % data
+        self.assertEqual(mail.outbox[0].body, body)

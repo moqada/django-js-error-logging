@@ -1,11 +1,12 @@
-{{ message|safe }}
+## {{ message|safe }}
 
-Where:    {{ line }} in {% if page == url %}inline script{% else %}{{ url|safe }}{% endif %}
+Where:      {{ line }} in {% if page == url %}inline script{% else %}{{ url|safe }}{% endif %}
 UserAgent:  {{ user_agent|safe }}
-When:     {% if when == 'before' %}Before{% else %}After{% endif %} page load
-On Page:  {{ page|safe }}
-Date:     {{ created_at }}
+When:       {% if when == 'before' %}Before{% else %}After{% endif %} page load
+On Page:    {{ page|safe }}
+Date:       {{ created_at|date:"Y-m-d H:i:s" }}
+UserID:     {{ user_id }}
+SessionKey: {{ session_key }}
 {% if meta %}
-Extras
-======{% for k , v in meta.items %}
+### Extras{% for k , v in meta.items %}
 {{ k|safe }}: {{ v|safe }}{% endfor %}{% endif %}

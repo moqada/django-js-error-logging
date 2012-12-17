@@ -149,20 +149,7 @@ Logging additional data
 
 You can log your custom data.
 
-For example, Django JS Error Logging has another template for the following additional data.
-
-* ``django.contrib.auth.User.id``
-* ``request.session.session_key``
-
-When you want to log user_id and session_key, set the following templatetag::
-
-   <head>
-   # ...
-   {% include "jserrorlogging/includes/script_with_user.html" %}
-   # ...
-   </head>
-
-If you want to log another data, 
+If you want to log custom data,
 Create a template that extends ``jserrorlogging/includes/script.html`` and 
 edit ``meta_data`` block.
 

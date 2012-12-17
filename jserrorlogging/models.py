@@ -21,6 +21,9 @@ class BaseLog(models.Model):
     url = models.URLField(verify_exists=False)
     user_agent = models.CharField(max_length=255)
     when = models.CharField(max_length=50)
+    remote_addr = models.IPAddressField(blank=True, null=True)
+    session_key = models.CharField(max_length=40, blank=True)
+    user_id = models.IntegerField(blank=True, null=True)
     meta = models.TextField(blank=True)
 
     objects = LogManager()

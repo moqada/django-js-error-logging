@@ -9,7 +9,7 @@ def create_dummy_error_data(**kwargs):
     """ return dummy error data
     """
     data = {
-        'page': 'http://localhost?test=key',
+        'page': 'http://localhost/?test=key',
         'url': 'http://localhost/static/app.js',
         'message': 'Uncaught ReferenceError: aaa is not defined',
         'line': 87,
@@ -46,6 +46,17 @@ def get_log_view_url():
 class LogViewTests(TestCase):
     urls = 'jserrorlogging.urls'
 
+    def setUp(self):
+        self.user = self._create_user(self)
+
+    def _create_user(self, username='test_user'):
+        from django.contrib.auth.models import User
+        return User.objects.create_user('test_user', password='test')
+
+    def _login(self, user):
+        self.assertTrue(
+            self.client.login(username=self.user.username, password='test'))
+
     def _assert_response(self, response, count=1):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('Posted %s errors' % count in response.content,
@@ -63,12 +74,45 @@ class LogViewTests(TestCase):
         data = [create_dummy_error_data()]
         res = self.client.post(get_log_view_url(), create_post_data(data))
         self._assert_response(res)
+        valid_data = {
+            'meta': '',
+            'browser': 'Chrome',
+            'user_id': None,
+            'session_key': '',
+            'remote_addr': '127.0.0.1'
+        }
+        valid_data.update(data[0])
+        self._assert_latest_log(**valid_data)
 
     def test_it_multiple(self):
         data = [create_dummy_error_data()]
         data.append(create_dummy_error_data())
         res = self.client.post(get_log_view_url(), create_post_data(data))
         self._assert_response(res, count=2)
+
+    def test_it_with_user(self):
+        """ post by logged in user
+        """
+        data = [create_dummy_error_data()]
+        self._login(self.user)
+        res = self.client.post(get_log_view_url(), create_post_data(data))
+        self._assert_response(res)
+        self._assert_latest_log(user_id=self.user.id)
+
+    def test_it_with_session(self):
+        """ user has session
+        """
+        data = [create_dummy_error_data()]
+        # set session data
+        from django.conf import settings
+        from django.utils.importlib import import_module
+        engine = import_module(settings.SESSION_ENGINE)
+        store = engine.SessionStore()
+        store.save()
+        session_key = store.session_key
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = session_key
+        self.client.post(get_log_view_url(), create_post_data(data))
+        self._assert_latest_log(session_key=session_key)
 
     def test_it_with_meta(self):
         data = [create_dummy_error_data()]

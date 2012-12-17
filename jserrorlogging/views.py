@@ -50,7 +50,11 @@ class LoggingView(TemplateView):
             inline = form.inline
             if form.is_valid() and (inline is None or inline.is_valid()):
                 data = form.cleaned_data.copy()
-                data.update(created_at=now)
+                data.update(
+                    created_at=now,
+                    user_id=request.user.id,
+                    session_key=request.session.session_key or '',
+                    remote_addr=request.META.get('REMOTE_ADDR', ''))
                 meta_data = None if inline is None else inline.cleaned_data
                 self.save_log(data, meta_data=meta_data)
                 succeeded.append({'data': data, 'meta': meta_data})

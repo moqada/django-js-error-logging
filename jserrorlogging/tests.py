@@ -184,6 +184,7 @@ class ReceiverNotifyByEmailTests(TestCase):
             u'When:       Before page load\n'
             u'On Page:    %(page)s\n'
             u'Date:       %(created_at)s\n'
+            u'RemoteAddr: %(remote_addr)s\n'
             u'UserID:     %(user_id)s\n'
             u'SessionKey: %(session_key)s\n\n'
         ) % data

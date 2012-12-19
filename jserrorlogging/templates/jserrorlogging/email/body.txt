@@ -5,6 +5,7 @@ UserAgent:  {{ user_agent|safe }}
 When:       {% if when == 'before' %}Before{% else %}After{% endif %} page load
 On Page:    {{ page|safe }}
 Date:       {{ created_at|date:"Y-m-d H:i:s" }}
+RemoteAddr: {{ remote_addr }}
 UserID:     {{ user_id }}
 SessionKey: {{ session_key }}
 {% if meta %}
